@@ -1,7 +1,7 @@
 from basicProject import app,db
 import credentials
 from flask  import render_template, redirect,request,url_for,flash,abort
-from flask_login import login_user,login_required,logout_user
+from flask_login import login_user,login_required,logout_user,current_user
 from basicProject.models import User
 from basicProject.forms import LoginForm,Registration
 from wit import Wit
@@ -14,13 +14,15 @@ bot = Wit(access_token = access_token)
 
 @app.route('/')
 def home():
-    flash("Please login or register!")
+    #flash("Please login or register!")
     return render_template('home.html')
 
 @app.route('/welcome')
 @login_required
 def welcome():
-    return render_template('welcome.html')
+    name = current_user.username
+    print(name)
+    return render_template('welcome.html', name = name)
 
 
 
@@ -36,7 +38,7 @@ def login():
     form = LoginForm()
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
-
+        
         
         #if (user is None):
         #    flash("Please provide correct log in credentials or register!")        
